@@ -1,5 +1,7 @@
 import argparse
 import os
+import numpy as np
+from omni.isaac.core.objects import DynamicSphere
 
 # 1. 导入 IsaacLab 和 Omniverse 核心组件
 from omni.isaac.kit import SimulationApp
@@ -47,6 +49,22 @@ def main():
         print("[SUCCESS] Real-world mesh loaded into the simulation!")
     else:
         print("[WARNING] GLB file not found! Please check the file path.")
+
+    print("[INFO] Spawning dynamic obstacles...")
+    for i in range(3):  # 在桌子上方生成 3 个球
+        # 随机生成坐标：X和Y在中心附近浮动，Z设为0.5米高，让它们掉下来
+        position = np.array([np.random.uniform(-0.2, 0.2), np.random.uniform(-0.2, 0.2), 0.5])
+        
+        DynamicSphere(
+            prim_path=f"/World/Obstacles/Sphere_{i}",
+            name=f"sphere_{i}",
+            position=position,
+            radius=0.03,                     # 半径3厘米
+            color=np.array([1.0, 0.0, 0.0]), # 警示红色
+            mass=0.1                         # 质量0.1kg
+        )
+    print("[SUCCESS] 3 Red Dynamic Spheres added to the scene.")
+
 
     # 6. 开启仿真循环，保持窗口不关闭
     print("[INFO] Entering simulation loop. Press Ctrl+C to exit.")
